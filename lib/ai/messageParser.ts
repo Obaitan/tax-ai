@@ -20,6 +20,11 @@ export const isNoInformationFound = (content: string): boolean => {
     "don't have information",
     "do not have information",
     "could not find",
+    "something went wrong",
+    "please try again",
+    "service is currently busy",
+    "reaching its limit",
+    "try again in about",
   ];
   return indicators.some((indicator) => lowerContent.includes(indicator));
 };

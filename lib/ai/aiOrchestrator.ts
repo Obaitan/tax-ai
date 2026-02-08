@@ -1,6 +1,10 @@
+import { ThinkingLevel } from "@google/genai";
 import { genAI, GEMINI_ASSISTANT_MODEL } from "@/lib/gemini/client";
 import { assemblePrompt } from "@/lib/ai/promptAssembler";
 import { SYSTEM_PROMPT_V1 } from "@/lib/ai/systemPrompt";
+
+const IS_GEMINI_3 =
+  GEMINI_ASSISTANT_MODEL.startsWith("gemini-3-");
 
 export async function runTaxAI({
   taskPrompt,
@@ -29,6 +33,9 @@ export async function runTaxAI({
     ],
     config: {
       systemInstruction: SYSTEM_PROMPT_V1,
+      ...(IS_GEMINI_3 && {
+        thinkingConfig: { thinkingLevel: ThinkingLevel.MEDIUM },
+      }),
       tools: storeId
         ? [
             {

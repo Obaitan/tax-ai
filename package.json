@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "upload-tax-files": "npx tsx scripts/upload-local-files.ts",
+    "cleanup-filestore": "npx tsx scripts/cleanup-filestore.ts"
   },
   "dependencies": {
     "@google/genai": "^1.40.0",

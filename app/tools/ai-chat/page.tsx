@@ -37,7 +37,7 @@ export default function AIChatPage() {
       setEditingMessageId(null);
 
       try {
-        const response = await fetch('/api/ai/tax', {
+        const response = await fetch('/api/tax', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -87,7 +87,7 @@ export default function AIChatPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/ai/tax', {
+      const response = await fetch('/api/tax', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question, context }),

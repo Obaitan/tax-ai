@@ -8,54 +8,6 @@ function extractName(question: string): string | null {
   return m ? m[1] : null;
 }
 
-function isLikelyTaxRelated(question: string): boolean {
-  if (!question) return false;
-  const q = question.toLowerCase();
-
-  // Broadened keyword list to include common synonyms and variations
-  const keywords = [
-    "tax",
-    "paye",
-    "vat",
-    "wht",
-    "tin",
-    "levy",
-    "duty",
-    "excise",
-    "income",
-    "profit",
-    "gain",
-    "relief",
-    "exemption",
-    "deduction",
-    "filing",
-    "return",
-    "compliance",
-    "assessment",
-    "penalty",
-    "interest",
-    "corporation",
-    "company",
-    "individual",
-    "personal",
-    "payroll",
-    "withholding",
-    "capital gains",
-    "stamp duty",
-    "education tax",
-    "itas",
-    "firs",
-    "sir",
-    "lirs",
-    "revenue",
-    "fiscal",
-  ];
-
-  // Check if any keyword matches as a word boundary to avoid partial matches like "taxi"
-  // but also allow simple inclusion for composite terms
-  return keywords.some((k) => q.includes(k));
-}
-
 export async function POST(req: Request) {
   const { question, context } = await req.json();
 
