@@ -125,7 +125,7 @@ export default function AIChatPage() {
           <div className="w-full max-w-6xl mx-auto px-6 md:px-12 xl:px-0 pt-10">
             <div className="space-y-4 max-w-2xl">
               <p className="text-lg md:text-[22px] text-zinc-800 dark:text-zinc-400 max-w-3xl leading-relaxed font-medium">
-                Your{' '}
+                Our{' '}
                 <span className="text-indigo-800 dark:text-indigo-400 font-bold">
                   AI Chat Assistant
                 </span>{' '}

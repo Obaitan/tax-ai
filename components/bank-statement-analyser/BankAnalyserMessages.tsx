@@ -85,7 +85,7 @@ export function BankAnalyserMessages({
                               )
                             : 5
                         }
-                        className="h-2 bg-zinc-100 dark:bg-zinc-800 border-none *:bg-emerald-500"
+                        className="h-2 bg-zinc-100 dark:bg-zinc-800 border-none *:bg-indigo-700"
                       />
                       <p className="text-xs text-zinc-500 italic">
                         Extracting credit data. This might take several

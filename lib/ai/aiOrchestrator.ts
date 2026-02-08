@@ -34,7 +34,7 @@ export async function runTaxAI({
     config: {
       systemInstruction: SYSTEM_PROMPT_V1,
       ...(IS_GEMINI_3 && {
-        thinkingConfig: { thinkingLevel: ThinkingLevel.MEDIUM },
+        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
       }),
       tools: storeId
         ? [

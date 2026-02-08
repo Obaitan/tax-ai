@@ -199,9 +199,9 @@ Note: Credit information extraction from bank statements may not be 100% accurat
                 <span className="text-indigo-800 dark:text-indigo-400 font-bold">
                   Bank Statement Analyser
                 </span>{' '}
-                will help you extract credit/inflow data from your{' '}
+                will help you extract credit/inflow data from your bank stattement.{' '}
                 <span className="font-bold underline decoration-indigo-500 underline-offset-4">
-                  Bank Statement
+                  Upload a bank statement
                 </span>
                 .
               </p>
