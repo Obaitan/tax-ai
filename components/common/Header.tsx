@@ -249,7 +249,7 @@ export default function Header() {
                         className="flex gap-1.5 px-4 py-3.5 text-sm text-zinc-700 dark:text-zinc-200 hover:bg-[#f6f6f6] dark:hover:bg-zinc-800 transition-colors"
                         aria-label={r.title}
                       >
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1.5">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="18"
@@ -260,7 +260,7 @@ export default function Header() {
                             strokeWidth="2"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            className="text-red-500"
+                            className="text-indigo-900 dark:text-indigo-400"
                           >
                             <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
                             <path d="M14 2v4a2 2 0 0 0 2 2h4" />

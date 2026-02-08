@@ -22,3 +22,22 @@ export type Message = {
   // For tax estimator: separate content for PDF generation (markdown) vs display (HTML)
   pdfContent?: string;
 };
+
+// Bank Statement Types
+export interface Transaction {
+  date: string;
+  description: string;
+  amount: number;
+  balance: number;
+  type: 'credit' | 'debit';
+}
+
+export interface BankStatementData {
+  accountName: string;
+  accountNumber: string;
+  bankName: string;
+  startDate: string;
+  endDate: string;
+  transactions: Transaction[];
+  totalCredits: number;
+}
