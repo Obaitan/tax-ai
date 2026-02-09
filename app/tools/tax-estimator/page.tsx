@@ -4,7 +4,15 @@ import { useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TaxEstimatorMessages } from "@/components/tax-estimator/TaxEstimatorMessages";
 import { TaxEstimatorInput } from "@/components/tax-estimator/TaxEstimatorInput";
-import { Message, TaxEstimatorState, TaxpayerType } from "@/app/types";
+import { ProcessProgression } from "@/components/tax-estimator/ProcessProgression";
+import { TaxEstimatorSummary } from "@/components/tax-estimator/TaxEstimatorSummary";
+import {
+  Message,
+  TaxEstimatorState,
+  TaxpayerType,
+  Stage,
+  StageId,
+} from "@/app/types";
 import {
   computeTaxableIncome,
   calculatePAYE,
@@ -15,6 +23,25 @@ import {
 
 type QuestionType = "choice" | "number" | "boolean" | "text" | "summary";
 
+export const INDIVIDUAL_STAGES: Stage[] = [
+  { id: "profile", label: "Taxpayer Profile" },
+  { id: "residency", label: "Tax Residency Status" },
+  { id: "employment", label: "Income Streams" },
+  { id: "other_income", label: "Investments & Other Income" },
+  { id: "reliefs", label: "Reliefs & Deductions" },
+  { id: "cgt", label: "Capital Gains" },
+  { id: "result", label: "Tax Summary" },
+];
+
+export const CORPORATE_STAGES: Stage[] = [
+  { id: "profile", label: "Taxpayer Profile" },
+  { id: "company_info", label: "Company Profile" },
+  { id: "expenditure", label: "Expenditure & R&D" },
+  { id: "group_structure", label: "Corporate Structure" },
+  { id: "vat_cgt", label: "VAT & Capital Gains" },
+  { id: "result", label: "Tax Summary" },
+];
+
 interface Question {
   id: string;
   text: string;
@@ -22,6 +49,7 @@ interface Question {
   options?: { label: string; value: string | boolean }[];
   field: string;
   branch?: TaxpayerType;
+  stage: StageId;
   next?: (state: TaxEstimatorState) => string | null;
   validate?: (value: string | number | boolean) => string | null;
 }
@@ -36,6 +64,7 @@ const QUESTIONS: Record<string, Question> = {
       { label: "Corporate", value: "CORPORATE" },
     ],
     field: "taxpayerType",
+    stage: "profile",
     next: (state) =>
       state.taxpayerType === "INDIVIDUAL" ? "IND_RESIDENT" : "CORP_TURNOVER",
   },
@@ -45,6 +74,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "Are you a tax resident of Nigeria? (Stayed 183+ days in a year or have strong economic ties)",
     type: "boolean",
     field: "isResident",
+    stage: "residency",
     next: () => "IND_FOREIGN_INCOME",
   },
   IND_FOREIGN_INCOME: {
@@ -52,6 +82,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "Do you earn income from outside Nigeria?",
     type: "boolean",
     field: "hasForeignIncome",
+    stage: "residency",
     next: (state) => {
       if (state.isResident === false && state.hasForeignIncome) {
         return "IND_NIGERIAN_INCOME_ASK";
@@ -64,6 +95,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "Do you also earn any income (salary, fees, or gains) from within Nigeria?",
     type: "boolean",
     field: "hasNigerianIncome",
+    stage: "residency",
     next: (state) =>
       state.hasNigerianIncome ? "IND_SALARY" : "IND_NO_TAX_SUMMARY",
   },
@@ -72,12 +104,14 @@ const QUESTIONS: Record<string, Question> = {
     text: "Based on your status as a non-resident with exclusively foreign income, you may have no Nigerian tax obligation. Generating your zero-tax summary...",
     type: "summary",
     field: "none",
+    stage: "result",
   },
   IND_SALARY: {
     id: "IND_SALARY",
     text: "What is your annual gross salary/emoluments? (Basic, housing, transport, etc.)",
     type: "number",
     field: "employmentIncome",
+    stage: "employment",
     next: () => "IND_BIK_ACCOM_ASK",
   },
   IND_BIK_ACCOM_ASK: {
@@ -85,6 +119,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "Did you have employer-provided accommodation?",
     type: "boolean",
     field: "benefitsInKind.hasAccommodation",
+    stage: "employment",
     next: (state) =>
       state.benefitsInKind?.hasAccommodation
         ? "IND_BIK_ACCOM_VAL"
@@ -95,6 +130,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "What is the value/cost of the employer-provided accommodation?",
     type: "number",
     field: "benefitsInKind.accommodationValue",
+    stage: "employment",
     next: () => "IND_BIK_ASSETS_ASK",
   },
   IND_BIK_ASSETS_ASK: {
@@ -102,6 +138,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "Did you use employer-provided assets (e.g., cars, equipment)?",
     type: "boolean",
     field: "benefitsInKind.hasAssets",
+    stage: "employment",
     next: (state) =>
       state.benefitsInKind?.hasAssets ? "IND_BIK_ASSETS_VAL" : "IND_EXTRA_ASK",
   },
@@ -110,6 +147,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "What is the cost of the employer-provided assets?",
     type: "number",
     field: "benefitsInKind.assetsValue",
+    stage: "employment",
     next: () => "IND_EXTRA_ASK",
   },
   IND_EXTRA_ASK: {
@@ -117,6 +155,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "Did you receive any extraordinary income (Prizes, Crypto gains, Professional fees)?",
     type: "boolean",
     field: "extraordinaryIncome.hasAny",
+    stage: "other_income",
     next: (state) =>
       state.extraordinaryIncome?.hasAny ? "IND_EXTRA_PRIZES" : "IND_RENT_ASK",
   },
@@ -125,6 +164,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "What was your income from prizes or winnings?",
     type: "number",
     field: "extraordinaryIncome.prizes",
+    stage: "other_income",
     next: () => "IND_EXTRA_CRYPTO",
   },
   IND_EXTRA_CRYPTO: {
@@ -132,6 +172,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "How much did you earn from digital assets (Crypto, NFTs)?",
     type: "number",
     field: "extraordinaryIncome.cryptoGains",
+    stage: "other_income",
     next: () => "IND_EXTRA_FEES",
   },
   IND_EXTRA_FEES: {
@@ -139,6 +180,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "How much did you earn from professional fees or commissions?",
     type: "number",
     field: "extraordinaryIncome.professionalFees",
+    stage: "other_income",
     next: () => "IND_RENT_ASK",
   },
   IND_RENT_ASK: {
@@ -146,6 +188,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "Do you rent your home? (If yes, this allows you to claim Rent Relief)",
     type: "boolean",
     field: "deductions.isRenter",
+    stage: "reliefs",
     next: (state) =>
       state.deductions?.isRenter ? "IND_DED_RENT" : "IND_DED_PENSION",
   },
@@ -154,6 +197,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "How much did you pay in rent this year? (For Rent Relief calculation)",
     type: "number",
     field: "deductions.rentPaid",
+    stage: "reliefs",
     next: () => "IND_DED_PENSION",
   },
   IND_DED_PENSION: {
@@ -161,6 +205,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "What was your total annual pension contributions?",
     type: "number",
     field: "deductions.pension",
+    stage: "reliefs",
     next: () => "IND_DED_NHIS",
   },
   IND_DED_NHIS: {
@@ -168,6 +213,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "How much was your annual NHIS or Life Assurance premium contribution?",
     type: "number",
     field: "deductions.nhis",
+    stage: "reliefs",
     next: () => "IND_DED_COMP",
   },
   IND_DED_COMP: {
@@ -175,6 +221,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "How much did you receive in compensation for loss of employment or injury?",
     type: "number",
     field: "deductions.compensation",
+    stage: "reliefs",
     next: () => "IND_CGT_ASK",
   },
   IND_CGT_ASK: {
@@ -182,6 +229,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "Did you sell any taxable assets (shares, land, etc.)? (Property/Cars for personal use are tax exempt)",
     type: "boolean",
     field: "capitalGains.hasDisposals",
+    stage: "cgt",
     next: (state) =>
       state.capitalGains?.hasDisposals ? "IND_CGT_VAL" : "IND_SUMMARY",
   },
@@ -190,6 +238,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "What was the total net gain from asset sales?",
     type: "number",
     field: "capitalGains.netGain",
+    stage: "cgt",
     next: () => "IND_SUMMARY",
   },
   IND_SUMMARY: {
@@ -197,6 +246,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "Calculation complete! Generating your individual tax summary...",
     type: "summary",
     field: "none",
+    stage: "result",
   },
 
   // CORPORATE FLOW
@@ -205,6 +255,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "What is your company's annual turnover (revenue)?",
     type: "number",
     field: "annualTurnover",
+    stage: "company_info",
     next: () => "CORP_ASSETS",
   },
   CORP_ASSETS: {
@@ -212,6 +263,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "What is the total value of your company's fixed assets?",
     type: "number",
     field: "fixedAssetValue",
+    stage: "company_info",
     next: () => "CORP_PROFIT",
   },
   CORP_PROFIT: {
@@ -219,6 +271,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "What is your assessable profit? (Net profit adjusted for tax)",
     type: "number",
     field: "assessableProfit",
+    stage: "company_info",
     next: () => "CORP_CAPEX",
   },
   CORP_CAPEX: {
@@ -226,6 +279,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "What is your qualifying capital expenditure for the year?",
     type: "number",
     field: "capitalExpenditure",
+    stage: "expenditure",
     next: () => "CORP_RD",
   },
   CORP_RD: {
@@ -233,6 +287,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "What is your total Research & Development (R&D) expenditure?",
     type: "number",
     field: "researchExpenditure",
+    stage: "expenditure",
     next: () => "CORP_GROUP",
   },
   CORP_GROUP: {
@@ -240,6 +295,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "Is the company part of a multinational group (Global turnover ≥ €750M)?",
     type: "boolean",
     field: "isMultinational",
+    stage: "group_structure",
     next: (state) =>
       state.isMultinational ? "CORP_GLOBAL_TURNOVER" : "CORP_VAT_OUT",
   },
@@ -248,6 +304,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "What is the global group turnover?",
     type: "number",
     field: "globalTurnover",
+    stage: "group_structure",
     next: () => "CORP_VAT_OUT",
   },
   CORP_VAT_OUT: {
@@ -255,6 +312,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "What is the total VAT output (taxable supplies)?",
     type: "number",
     field: "vatOutputs",
+    stage: "vat_cgt",
     next: () => "CORP_VAT_IN",
   },
   CORP_VAT_IN: {
@@ -262,6 +320,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "What is the total VAT input (recoverable on expenses/capex)?",
     type: "number",
     field: "vatInputs",
+    stage: "vat_cgt",
     next: () => "CORP_CGT",
   },
   CORP_CGT: {
@@ -269,6 +328,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "What is the total net gain from capital asset disposals?",
     type: "number",
     field: "corporateNetGain",
+    stage: "vat_cgt",
     next: () => "CORP_SUMMARY",
   },
   CORP_SUMMARY: {
@@ -276,6 +336,7 @@ const QUESTIONS: Record<string, Question> = {
     text: "Calculation complete! Generating your corporate tax summary...",
     type: "summary",
     field: "none",
+    stage: "result",
   },
 };
 
@@ -408,7 +469,7 @@ export default function TaxEstimatorPage() {
           finalState.hasNigerianIncome === false
         ) {
           summaryContent = `<div class="tax-summary">
-<h3 class="text-lg font-bold mb-5 text-center text-emerald-700 dark:text-emerald-400">No Tax Obligation</h3>
+<h3 class="text-lg font-bold mb-5 text-center text-indigo-900 dark:text-indigo-400">No Tax Obligation</h3>
 <div class="bg-emerald-50 dark:bg-emerald-900/20 p-6 rounded-lg border border-emerald-200 dark:border-emerald-800 mb-6">
   <p class="text-emerald-900 dark:text-emerald-100 text-center font-medium">
     Based on the information provided, you do not have a personal income tax obligation in Nigeria for the upcoming tax year.
@@ -550,7 +611,7 @@ ${
           relief,
         ) => `<div class="relief-item flex justify-between items-center p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-200 dark:border-zinc-700">
       <span class="text-sm font-medium">${relief.name}</span>
-      <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400">₦ ${relief.amount.toLocaleString()}</span>
+      <span class="text-sm font-bold text-indigo-600 dark:text-indigo-400">₦ ${relief.amount.toLocaleString()}</span>
     </div>`,
       )
       .join("")}
@@ -574,7 +635,7 @@ ${
         ) => `<div class="relief-item flex justify-between items-center p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-200 dark:border-zinc-700 text-sm">
         <div class="flex items-center gap-1.5"><span>${(b.rate * 100).toFixed(2)}% tax rate</span>
       <span class="font-medium">on ₦ ${b.taxableAmount.toLocaleString()}</span></div>
-      <span class="font-bold text-emerald-600 dark:text-emerald-400">₦ ${b.taxAmount.toLocaleString()}</span>
+      <span class="font-bold text-indigo-600 dark:text-indigo-400">₦ ${b.taxAmount.toLocaleString()}</span>
     </div>`,
       )
       .join("")}
@@ -768,7 +829,7 @@ This estimate is for informational purposes only and is based on the **Nigeria T
     <div class="breakdown-item flex justify-between items-center p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-200 dark:border-zinc-700">
       <span class="text-sm font-medium">Company Income Tax (CIT)</span>
       <div class="text-right">
-        <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400">₦ ${finalCit.toLocaleString()}</span>
+        <span class="text-sm font-bold text-indigo-600 dark:text-indigo-400">₦ ${finalCit.toLocaleString()}</span>
         ${edtiCredit > 0 ? `<div class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">After ₦ ${edtiCredit.toLocaleString()} EDTI cap-ex credit</div>` : ""}
       </div>
     </div>
@@ -889,33 +950,75 @@ This corporate tax estimate is provided for planning purposes under the NTA 2025
 
   return (
     <TooltipProvider>
-      <div className="flex flex-col min-h-[calc(100dvh-64px)] bg-zinc-50 dark:bg-zinc-950">
-        <main className="grow flex flex-col">
-          <div className="w-full max-w-6xl mx-auto px-6 md:px-12 xl:px-0 pt-10">
-            <div className="space-y-4 max-w-2xl">
-              <p className="text-lg md:text-[22px] text-zinc-800 dark:text-zinc-400 max-w-3xl leading-relaxed font-medium">
-                Our{" "}
-                <span className="text-indigo-800 dark:text-indigo-400 font-bold">
-                  Tax Estimator
-                </span>{" "}
-                will guide you through estimating your taxes based on the new
-                tax Act.{" "}
-                <span className="font-bold underline decoration-indigo-500 underline-offset-4">
-                  Start below...
-                </span>
-              </p>
+      <div className="flex flex-col h-[calc(100dvh-64px)] bg-zinc-50 dark:bg-zinc-950 overflow-hidden">
+        <main className="grow flex flex-col min-h-0">
+          <div className="w-full max-w-6xl mx-auto px-6 md:px-12 xl:px-0 pt-6 flex flex-col h-full">
+            <div className="shrink-0 space-y-4">
+              <div className="max-w-2xl">
+                <p className="text-lg md:text-[22px] text-zinc-800 dark:text-zinc-400 max-w-3xl leading-relaxed font-medium">
+                  Our{" "}
+                  <span className="text-indigo-800 dark:text-indigo-400 font-bold">
+                    Tax Estimator
+                  </span>{" "}
+                  will guide you through estimating your taxes based on the new
+                  tax Act.{" "}
+                  <span className="font-bold underline decoration-indigo-500 underline-offset-4">
+                    Start below...
+                  </span>
+                </p>
+              </div>
+              {/* Process progression with numbering on top of the section/stage name */}
+              <div className="mt-8 mb-6">
+                <ProcessProgression
+                  currentStageId={
+                    QUESTIONS[currentQuestionId]?.stage || "profile"
+                  }
+                  stages={
+                    state.taxpayerType === "CORPORATE"
+                      ? CORPORATE_STAGES
+                      : INDIVIDUAL_STAGES
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="lg:grid lg:grid-cols-10 lg:gap-10 grow min-h-0 pb-2">
+              {/* Main Chat Area (Prompts/Questions) - Takes 2/3 width on LG */}
+              <div className="lg:col-span-6 flex flex-col h-full min-h-0">
+                <div className="h-full overflow-y-auto px-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                  <TaxEstimatorMessages
+                    messages={messages}
+                    isLoading={isLoading}
+                    onOptionClick={handleOptionClick}
+                    isComplete={isComplete}
+                    onNewSession={handleNewSession}
+                  />
+                </div>
+              </div>
+
+              {/* Summary Component (Right Sidebar) - Takes 1/3 width on LG */}
+              <div className="hidden lg:block lg:col-span-4 h-full min-h-0 pt-0">
+                <div className="h-full">
+                  <TaxEstimatorSummary
+                    state={state}
+                    questions={QUESTIONS}
+                    stages={
+                      state.taxpayerType === "CORPORATE"
+                        ? CORPORATE_STAGES
+                        : INDIVIDUAL_STAGES
+                    }
+                    onUpdate={(field, value) => {
+                      const newState = setNestedField(state, field, value);
+                      setState(newState);
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          <TaxEstimatorMessages
-            messages={messages}
-            isLoading={isLoading}
-            onOptionClick={handleOptionClick}
-            isComplete={isComplete}
-            onNewSession={handleNewSession}
-          />
         </main>
 
-        <div className="sticky bottom-0 z-40 bg-zinc-50/60 dark:bg-zinc-950/80 backdrop-blur-md border-t border-zinc-200/50 dark:border-zinc-800/50">
+        <div className="shrink-0 z-40 bg-zinc-50/60 dark:bg-zinc-950/80 backdrop-blur-md border-t border-zinc-200/50 dark:border-zinc-800/50 w-full">
           <TaxEstimatorInput
             input={input}
             setInput={setInput}

@@ -43,6 +43,24 @@ export interface BankStatementData {
 }
 
 // Tax Estimator Types
+export type StageId =
+  | "profile"
+  | "residency"
+  | "employment"
+  | "other_income"
+  | "reliefs"
+  | "cgt"
+  | "company_info"
+  | "expenditure"
+  | "group_structure"
+  | "vat_cgt"
+  | "result";
+
+export interface Stage {
+  id: StageId;
+  label: string;
+}
+
 export type TaxpayerType = "INDIVIDUAL" | "CORPORATE";
 
 export type TaxEstimatorState = {

@@ -56,7 +56,7 @@ export function TaxEstimatorInput({
   };
 
   return (
-    <div className="py-4 md:py-6">
+    <div className="py-4">
       <form
         onSubmit={onSubmit}
         className="max-w-4xl mx-auto px-4 md:px-12 lg:px-0"
@@ -68,7 +68,7 @@ export function TaxEstimatorInput({
               <button
                 type="button"
                 onClick={onNewSession}
-                className="bg-zinc-100 dark:bg-zinc-900 rounded-full dark:hover:bg-zinc-800 transition-colors flex items-center justify-center text-xs font-semibold text-emerald-700 cursor-pointer w-10 h-10 shrink-0 border border-[#f3f3f3] dark:border-zinc-800"
+                className="bg-zinc-100 dark:bg-zinc-900 rounded-full dark:hover:bg-zinc-800 transition-colors flex items-center justify-center text-xs font-semibold text-indigo-500 cursor-pointer w-10 h-10 shrink-0 border border-[#f3f3f3] dark:border-zinc-800"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -121,7 +121,7 @@ export function TaxEstimatorInput({
             <Button
               type="submit"
               disabled={!input.trim() || isLoading || isComplete}
-              className="shrink-0 h-8 w-8 rounded-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-zinc-300 dark:disabled:bg-zinc-600 transition-colors"
+              className="shrink-0 h-8 w-8 rounded-full bg-indigo-800 hover:bg-indigo-800 disabled:bg-zinc-300 dark:disabled:bg-zinc-600 transition-colors"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -204,7 +204,7 @@ export function TaxEstimatorInput({
               <Button
                 type="submit"
                 disabled={!input.trim() || isLoading || isComplete}
-                className="shrink-0 h-8 w-8 rounded-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-zinc-300 dark:disabled:bg-zinc-600 transition-colors"
+                className="shrink-0 h-8 w-8 rounded-full bg-indigo-800 hover:bg-indigo-800 dark:bg-indigo-400 disabled:bg-zinc-300 dark:disabled:bg-zinc-600 transition-colors"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

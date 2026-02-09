@@ -53,20 +53,22 @@ export function TaxEstimatorMessages({
 
   return (
     <div className="w-full max-w-6xl mx-auto grow flex flex-col">
-      <div className="flex-1 px-6 md:px-12 xl:px-0">
-        <div className="max-w-6xl mx-auto space-y-10 pt-10 pb-12 relative">
-          {messages.map((message) => (
+      <div className="flex-1">
+        <div className="max-w-6xl mx-auto space-y-10 pt-6 pb-12 relative">
+          {messages.map((message, index) => (
             <div
               key={message.id}
               className={`flex gap-2.5 scroll-mt-32 ${
-                message.role === "user" ? "justify-end" : "justify-start"
+                message.role === "user"
+                  ? "justify-end lg:hidden"
+                  : "justify-start"
               }`}
             >
               <div
                 className={`rounded-2xl px-4 py-3 ${
                   message.role === "user"
-                    ? "max-w-[85%] md:max-w-[70%] bg-emerald-600 text-white"
-                    : "w-full md:max-w-[93%] lg:max-w-[83%] xl:max-w-[70%] bg-white dark:bg-zinc-900 border border-[#f5f5f5] dark:border-zinc-900 text-zinc-800 dark:text-zinc-200"
+                    ? "max-w-[85%] md:max-w-[70%] bg-indigo-500 text-white"
+                    : "w-full md:max-w-[93%] lg:max-w-full bg-white dark:bg-zinc-900 border border-[#f5f5f5] dark:border-zinc-900 text-zinc-800 dark:text-zinc-200"
                 }`}
               >
                 {message.role === "user" ? (
@@ -180,11 +182,17 @@ export function TaxEstimatorMessages({
                           <button
                             key={idx}
                             onClick={() => onOptionClick?.(option.value)}
-                            disabled={isComplete}
+                            disabled={
+                              isComplete ||
+                              index !== messages.length - 1 ||
+                              isLoading
+                            }
                             className={`px-4 py-2 text-sm rounded-full border transition-all font-medium cursor-pointer ${
-                              isComplete
+                              isComplete ||
+                              index !== messages.length - 1 ||
+                              isLoading
                                 ? "border-zinc-100 dark:border-zinc-800 text-zinc-400 dark:text-zinc-600 cursor-not-allowed"
-                                : "border-zinc-200 dark:border-zinc-800 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:border-emerald-500 text-emerald-700 dark:text-emerald-400"
+                                : "border-zinc-200 dark:border-zinc-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/45 hover:border-indigo-500 text-indigo-800 dark:text-indigo-400"
                             }`}
                           >
                             {option.label}
@@ -208,7 +216,7 @@ export function TaxEstimatorMessages({
                         <TooltipTrigger asChild>
                           <button
                             onClick={() => handleDownload(message)}
-                            className="p-2.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all cursor-pointer"
+                            className="p-2.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-indigo-900 dark:hover:text-indigo-400 transition-all cursor-pointer"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -241,9 +249,9 @@ export function TaxEstimatorMessages({
           {isLoading && (
             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl px-4 py-3 w-fit">
               <div className="flex items-center gap-1">
-                <div className="h-2 w-2 rounded-full bg-emerald-500 animate-bounce-extra [animation-delay:-0.3s]" />
-                <div className="h-2 w-2 rounded-full bg-emerald-500 animate-bounce-extra [animation-delay:-0.15s]" />
-                <div className="h-2 w-2 rounded-full bg-emerald-500 animate-bounce-extra" />
+                <div className="h-2 w-2 rounded-full bg-indigo-900 dark:bg-indigo-400 animate-bounce-extra [animation-delay:-0.3s]" />
+                <div className="h-2 w-2 rounded-full bg-indigo-900 dark:bg-indigo-400 animate-bounce-extra [animation-delay:-0.3s]" />
+                <div className="h-2 w-2 rounded-full bg-indigo-900 dark:bg-indigo-400 animate-bounce-extra [animation-delay:-0.3s]" />
               </div>
             </div>
           )}
@@ -252,7 +260,7 @@ export function TaxEstimatorMessages({
             <div className="flex flex-wrap text-xs gap-3.5 animate-in fade-in slide-in-from-bottom-4 duration-700">
               <button
                 onClick={onNewSession}
-                className="flex items-center gap-2 px-4.5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-semibold transition-all shadow-lg shadow-emerald-500/20 cursor-pointer"
+                className="flex items-center gap-2 px-4.5 py-2.5 bg-indigo-800 hover:bg-indigo-800 text-white rounded-full font-semibold transition-all shadow-md cursor-pointer"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -272,7 +280,7 @@ export function TaxEstimatorMessages({
               </button>
               <Link
                 href="/tools/ai-chat"
-                className="flex items-center gap-2 px-4.5 py-2.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-emerald-500 text-zinc-700 dark:text-zinc-300 rounded-full font-semibold transition-all cursor-pointer"
+                className="flex items-center gap-2 px-4.5 py-2.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500 text-zinc-700 dark:text-zinc-300 rounded-full font-semibold transition-all cursor-pointer"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -284,7 +292,7 @@ export function TaxEstimatorMessages({
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="text-emerald-500"
+                  className="text-indigo-800"
                 >
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>

@@ -36,7 +36,7 @@ export function AIAssistantInput({
   };
 
   return (
-    <div className="py-4 md:py-6">
+    <div className="py-4">
       <form
         onSubmit={onSubmit}
         className="max-w-4xl mx-auto px-4 md:px-12 lg:px-0"
