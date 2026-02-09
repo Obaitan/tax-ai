@@ -44,7 +44,7 @@ export const parseMessage = (content: string) => {
 
   // Normalize separators: convert newlines or multiple spaces between citations into semicolons
   // Only if they aren't already there
-  let processedCitations = citations
+  const processedCitations = citations
     .trim()
     .split(/\n+/)
     .map((c) => c.trim())

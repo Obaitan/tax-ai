@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { genAI } from "./client";
 
 export async function createFileSearchStore(forceNew = false) {
@@ -12,7 +13,7 @@ export async function createFileSearchStore(forceNew = false) {
           return store;
         }
       }
-    } catch (error) {
+    } catch (_error) {
       console.warn("Could not list stores, attempting to create new one...");
     }
   }
@@ -27,12 +28,10 @@ export async function createFileSearchStore(forceNew = false) {
 /**
  * List all files in a file search store
  */
-export async function listFilesInStore(storeId: string): Promise<any[]> {
+export async function listFilesInStore(storeId: string): Promise<unknown[]> {
   try {
-   
-
     // Try to get store info
-    const store = await genAI.fileSearchStores.get({ name: storeId });
+    const _store = await genAI.fileSearchStores.get({ name: storeId });
 
     return [];
   } catch (error) {
@@ -47,8 +46,12 @@ export async function listFilesInStore(storeId: string): Promise<any[]> {
  * Files can only be removed by deleting the entire store.
  */
 export async function deleteFileFromStore(storeId: string, fileName: string) {
-  console.warn(`⚠️  Gemini API doesn't support removing individual files from stores.`);
-  console.warn(`To remove files, you need to delete the entire store and create a new one.`);
+  console.warn(
+    "Gemini API doesn't support removing individual files from stores.",
+  );
+  console.warn(
+    "To remove files, you need to delete the entire store and create a new one.",
+  );
   console.warn(`File ${fileName} cannot be removed individually.`);
   throw new Error("Individual file removal not supported by Gemini API");
 }

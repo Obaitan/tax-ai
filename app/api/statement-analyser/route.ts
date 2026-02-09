@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest, NextResponse } from "next/server";
 import { parseBankStatementPDF } from "@/lib/bankStatement/parser";
 import { del } from "@vercel/blob";
@@ -75,15 +76,16 @@ export async function POST(request: NextRequest) {
               encoder.encode(JSON.stringify({ type: "result", data }) + "\n"),
             );
           }
-        } catch (error: any) {
-          console.error("Statement analysis stream error:", error);
+        } catch (error) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const err = error as any;
+          console.error("Statement analysis stream error:", err);
           controller.enqueue(
             encoder.encode(
               JSON.stringify({
                 type: "error",
                 error:
-                  error.message ||
-                  "An unexpected error occurred during analysis",
+                  err.message || "An unexpected error occurred during analysis",
               }) + "\n",
             ),
           );
@@ -115,7 +117,9 @@ export async function POST(request: NextRequest) {
     if (blobUrl) {
       try {
         await del(blobUrl, { token: blobToken() });
-      } catch (e) {}
+      } catch (_e) {
+        // Ignore deletion errors
+      }
     }
     return NextResponse.json(
       {

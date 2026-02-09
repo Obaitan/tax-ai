@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { TooltipProvider } from '@/components/ui/tooltip';
-import { WelcomeScreen } from '@/components/home/WelcomeScreen';
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { WelcomeScreen } from "@/components/home/WelcomeScreen";
 
 export default function Home() {
   return (

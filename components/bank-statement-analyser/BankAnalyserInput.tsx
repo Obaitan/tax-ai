@@ -1,8 +1,8 @@
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
 interface BankAnalyserInputProps {
   isLoading: boolean;
-  onFileUpload: (type: 'bank') => void;
+  onFileUpload: (type: "bank") => void;
 }
 
 export function BankAnalyserInput({
@@ -10,7 +10,7 @@ export function BankAnalyserInput({
   onFileUpload,
 }: BankAnalyserInputProps) {
   const handleBankStatementUpload = () => {
-    onFileUpload('bank');
+    onFileUpload("bank");
   };
 
   return (

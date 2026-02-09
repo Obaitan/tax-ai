@@ -40,9 +40,11 @@ export async function POST(req: Request) {
     });
 
     return Response.json({ aiResponse });
-  } catch (error: any) {
-    console.error("Chat AI Error:", error);
-    const msg = error.message || "";
+  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const err = error as any;
+    console.error("Chat AI Error:", err);
+    const msg = err.message || "";
     let userFriendlyMessage =
       "I'm sorry, something went wrong while processing your request. Please try again.";
 

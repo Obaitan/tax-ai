@@ -1,10 +1,12 @@
-import { useEffect, useRef } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { Message } from '@/app/types';
-import { parseMessage } from '@/lib/ai/messageParser';
-import { Progress } from '@/components/ui/progress';
-import Image from 'next/image';
-import Link from 'next/link';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
+import { useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+import { Message } from "@/app/types";
+import { parseMessage } from "@/lib/ai/messageParser";
+import { Progress } from "@/components/ui/progress";
+import Image from "next/image";
+import Link from "next/link";
 
 interface BankAnalyserMessagesProps {
   messages: Message[];
@@ -20,7 +22,7 @@ export function BankAnalyserMessages({
   useEffect(() => {
     const timer = setTimeout(() => {
       if (scrollRef.current) {
-        scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        scrollRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
       }
     }, 100);
     return () => clearTimeout(timer);
@@ -34,17 +36,17 @@ export function BankAnalyserMessages({
             <div
               key={message.id}
               className={`flex gap-2.5 scroll-mt-48 ${
-                message.role === 'user' ? 'justify-end' : 'justify-start'
+                message.role === "user" ? "justify-end" : "justify-start"
               }`}
             >
               <div
                 className={`rounded-2xl px-4 py-3 ${
-                  message.role === 'user'
-                    ? 'max-w-[85%] md:max-w-[70%] bg-[#f4f4f4] dark:bg-zinc-800 dark:text-zinc-100 text-zinc-800'
-                    : 'w-full md:max-w-[93%] lg:max-w-[83%] xl:max-w-[70%] bg-white dark:bg-zinc-900 border border-[#f5f5f5] dark:border-zinc-900 text-zinc-800 dark:text-zinc-200'
+                  message.role === "user"
+                    ? "max-w-[85%] md:max-w-[70%] bg-[#f4f4f4] dark:bg-zinc-800 dark:text-zinc-100 text-zinc-800"
+                    : "w-full md:max-w-[93%] lg:max-w-[83%] xl:max-w-[70%] bg-white dark:bg-zinc-900 border border-[#f5f5f5] dark:border-zinc-900 text-zinc-800 dark:text-zinc-200"
                 }`}
               >
-                {message.role === 'user' ? (
+                {message.role === "user" ? (
                   message.fileName && (
                     <div className="flex flex-col items-center gap-2 max-w-55">
                       <div className="w-full rounded-md py-3 px-3 flex flex-col items-center">
@@ -75,8 +77,8 @@ export function BankAnalyserMessages({
                       </div>
                       <Progress
                         value={
-                          typeof message.progressCurrent === 'number' &&
-                          typeof message.progressTotal === 'number'
+                          typeof message.progressCurrent === "number" &&
+                          typeof message.progressTotal === "number"
                             ? Math.max(
                                 5,
                                 (message.progressCurrent /
@@ -135,7 +137,7 @@ export function BankAnalyserMessages({
                                   const url = URL.createObjectURL(
                                     message.pdfBlob!,
                                   );
-                                  const link = document.createElement('a');
+                                  const link = document.createElement("a");
                                   link.href = url;
                                   link.download = message.pdfFilename!;
                                   document.body.appendChild(link);
@@ -192,8 +194,8 @@ export function BankAnalyserMessages({
                 <div className="flex items-center justify-between mt-1.5 px-0.5">
                   <p className="text-xs text-zinc-400 dark:text-zinc-500">
                     {message.timestamp.toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
+                      hour: "2-digit",
+                      minute: "2-digit",
                     })}
                   </p>
                 </div>

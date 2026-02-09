@@ -22,7 +22,7 @@ export function generateBankStatementPDF(data: BankStatementData): Blob {
   doc.setFontSize(15);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(0, 0, 0);
-  doc.text("Tax Affairs", margin, 20);
+  doc.text("Tax Matters", margin, 20);
 
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
@@ -66,7 +66,7 @@ export function generateBankStatementPDF(data: BankStatementData): Blob {
   doc.text(
     `Credit Transactions: ${data.transactions.length}`,
     margin,
-    yPosition
+    yPosition,
   );
 
   yPosition += 7;
@@ -92,7 +92,7 @@ export function generateBankStatementPDF(data: BankStatementData): Blob {
     // Try DD/MM/YYYY or MM/DD/YYYY
     const m1 = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
     if (m1) {
-      let [_, p1, p2, p3] = m1;
+      const [p1, p2, p3] = m1.slice(1);
       const year = p3.length === 2 ? parseInt(`20${p3}`, 10) : parseInt(p3, 10);
       const v1 = parseInt(p1, 10);
       const v2 = parseInt(p2, 10);
@@ -114,11 +114,11 @@ export function generateBankStatementPDF(data: BankStatementData): Blob {
     // Try YYYY-MM-DD
     const m2 = s.match(/^(\d{4})[\-](\d{1,2})[\-](\d{1,2})$/);
     if (m2) {
-      let [_, yyyy, mm, dd] = m2;
+      const [yyyy, mm, dd] = m2.slice(1);
       return new Date(
         parseInt(yyyy, 10),
         parseInt(mm, 10) - 1,
-        parseInt(dd, 10)
+        parseInt(dd, 10),
       );
     }
 
@@ -128,7 +128,7 @@ export function generateBankStatementPDF(data: BankStatementData): Blob {
 
   // Sort all transactions ascending first to pick earliest/latest for the label
   const sortedAsc = [...data.transactions].sort(
-    (a, b) => parseDate(a.date).getTime() - parseDate(b.date).getTime()
+    (a, b) => parseDate(a.date).getTime() - parseDate(b.date).getTime(),
   );
   const derivedStart =
     sortedAsc.length > 0 ? sortedAsc[0].date : data.startDate;
@@ -151,7 +151,7 @@ export function generateBankStatementPDF(data: BankStatementData): Blob {
   doc.text(
     `${derivedStart} to ${derivedEnd}`,
     margin + labelWidth + 2,
-    yPosition
+    yPosition,
   );
 
   yPosition += 7;
@@ -177,7 +177,7 @@ export function generateBankStatementPDF(data: BankStatementData): Blob {
   const balanceColWidth = 40; // mm
   const narrationColWidth = Math.max(
     availableWidth - (dateColWidth + creditColWidth + balanceColWidth),
-    60
+    60,
   );
 
   // Add table using autoTable
@@ -188,7 +188,7 @@ export function generateBankStatementPDF(data: BankStatementData): Blob {
     tableWidth: availableWidth,
     theme: "striped",
     headStyles: {
-      fillColor: [16, 185, 129], // Emerald color
+      fillColor: [55, 42, 172], // indigo colour
       textColor: [255, 255, 255],
       fontStyle: "bold",
       fontSize: 9,
@@ -219,7 +219,8 @@ export function generateBankStatementPDF(data: BankStatementData): Blob {
   });
 
   // Add Disclaimer at the end
-  yPosition = (doc as any).lastAutoTable.finalY + 12;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  yPosition = (doc as any).lastAutoTable?.finalY ?? yPosition + 12;
 
   if (yPosition > pageHeight - 40) {
     doc.addPage();
@@ -240,6 +241,7 @@ export function generateBankStatementPDF(data: BankStatementData): Blob {
   doc.text(lines, margin, yPosition);
 
   // Add footer to all pages
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const totalPages = (doc as any).internal.getNumberOfPages();
   for (let i = 1; i <= totalPages; i++) {
     doc.setPage(i);

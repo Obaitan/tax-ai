@@ -34,7 +34,10 @@ export async function ingestFileFromUrl({
     }
 
     const fileStream = fs.createWriteStream(localPath);
-    await finished(Readable.fromWeb(response.body as any).pipe(fileStream));
+    await finished(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Readable.fromWeb(response.body as any).pipe(fileStream),
+    );
 
     const uploadResponse = await genAI.files.upload({
       file: localPath,
@@ -257,7 +260,7 @@ export async function ingestFilesFromDirectory({
 
     return results;
   } catch (error) {
-    console.error(`Directory ingestion failed:`, error);
+    console.error("Directory ingestion failed:", error);
     throw error;
   }
 }

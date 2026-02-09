@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { ContactLink } from './ContactLink';
-import { resources } from '../../lib/data/resources';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ContactLink } from "./ContactLink";
+import { resources } from "../../lib/data/resources";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -55,9 +55,9 @@ export default function Footer() {
                 <Link
                   href="/tools/tax-estimator"
                   className={`transition-colors text-sm ${
-                    pathname === '/tools/tax-estimator'
-                      ? 'text-indigo-900 dark:text-indigo-400 font-medium'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:text-indigo-900 dark:hover:text-indigo-400'
+                    pathname === "/tools/tax-estimator"
+                      ? "text-indigo-900 dark:text-indigo-400 font-medium"
+                      : "text-zinc-600 dark:text-zinc-400 hover:text-indigo-900 dark:hover:text-indigo-400"
                   }`}
                 >
                   Tax Estimator
@@ -67,9 +67,9 @@ export default function Footer() {
                 <Link
                   href="/tools/ai-chat"
                   className={`transition-colors text-sm ${
-                    pathname === '/tools/ai-chat'
-                      ? 'text-indigo-900 dark:text-indigo-400 font-medium'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:text-indigo-900 dark:hover:text-indigo-400'
+                    pathname === "/tools/ai-chat"
+                      ? "text-indigo-900 dark:text-indigo-400 font-medium"
+                      : "text-zinc-600 dark:text-zinc-400 hover:text-indigo-900 dark:hover:text-indigo-400"
                   }`}
                 >
                   AI Chat Assistant
@@ -79,9 +79,9 @@ export default function Footer() {
                 <Link
                   href="/tools/bank-statement"
                   className={`transition-colors text-sm ${
-                    pathname === '/tools/bank-statement'
-                      ? 'text-indigo-900 dark:text-indigo-400 font-medium'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:text-indigo-900 dark:hover:text-indigo-400'
+                    pathname === "/tools/bank-statement"
+                      ? "text-indigo-900 dark:text-indigo-400 font-medium"
+                      : "text-zinc-600 dark:text-zinc-400 hover:text-indigo-900 dark:hover:text-indigo-400"
                   }`}
                 >
                   Bank Statement Analyser

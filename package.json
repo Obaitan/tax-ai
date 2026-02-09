@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "upload-tax-files": "npx tsx scripts/upload-local-files.ts",
     "cleanup-filestore": "npx tsx scripts/cleanup-filestore.ts"
   },

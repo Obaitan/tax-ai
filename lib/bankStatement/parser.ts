@@ -1,9 +1,10 @@
-import { BankStatementData } from '@/app/types';
-import fs from 'fs';
-import path from 'path';
-import os from 'os';
-import { genAI, GEMINI_PARSER_MODEL } from '@/lib/gemini/client';
-import pdf from 'pdf-parse';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { BankStatementData } from "@/app/types";
+import fs from "fs";
+import path from "path";
+import os from "os";
+import { genAI, GEMINI_PARSER_MODEL } from "@/lib/gemini/client";
+import pdf from "pdf-parse";
 
 // pdf-parse is used for reliable page counting and metadata extraction
 
@@ -23,11 +24,11 @@ export async function parseBankStatementPDF(
 
   // Initialize data structure
   const data: BankStatementData = {
-    accountName: '',
-    accountNumber: '',
-    bankName: '',
-    startDate: '',
-    endDate: '',
+    accountName: "",
+    accountNumber: "",
+    bankName: "",
+    startDate: "",
+    endDate: "",
     transactions: [],
     totalCredits: 0,
   };
@@ -37,12 +38,12 @@ export async function parseBankStatementPDF(
   try {
     const pdfData = await pdf(buffer);
     numPages = pdfData.numpages || 1;
-  } catch (pdfError) {
+  } catch (_pdfError) {
     // Fallback: Look for the root /Pages object count
     const countRegex = /\/Type\s*\/Pages\b[\s\S]*?\/Count\s+(\d+)/g;
     let countEstimate = 0;
     let matches;
-    const binContent = buffer.toString('binary');
+    const binContent = buffer.toString("binary");
     while ((matches = countRegex.exec(binContent)) !== null) {
       const c = parseInt(matches[1], 10);
       if (!isNaN(c)) countEstimate = c;
@@ -56,8 +57,8 @@ export async function parseBankStatementPDF(
 
   // Use Gemini AI with native PDF support for superior accuracy and reliability.
   // We process the document in chunks to handle large files and prevent truncation.
-  let tempPath = '';
-  let uploadedFile: any = null;
+  let tempPath = "";
+  let uploadedFile: { file?: { uri: string }; uri?: string } | null = null;
 
   try {
     // 1. Save buffer to temporary file for upload
@@ -66,14 +67,14 @@ export async function parseBankStatementPDF(
 
     // 2. Upload to Gemini File API
     if (!genAI.files || !genAI.files.upload) {
-      console.error('Gemini SDK error: genAI.files.upload is not available');
-      throw new Error('AI File service mismatch');
+      console.error("Gemini SDK error: genAI.files.upload is not available");
+      throw new Error("AI File service mismatch");
     }
 
     uploadedFile = await genAI.files.upload({
       file: tempPath,
       config: {
-        mimeType: 'application/pdf',
+        mimeType: "application/pdf",
         displayName: file.name,
       },
     });
@@ -114,8 +115,8 @@ export async function parseBankStatementPDF(
       Extract all credit transactions from these pages.
       ${
         isFirst
-          ? 'Also extract: accountName, accountNumber, and bankName from the header.'
-          : 'Focus only on transactions. Use empty strings for accountName, accountNumber, and bankName.'
+          ? "Also extract: accountName, accountNumber, and bankName from the header."
+          : "Focus only on transactions. Use empty strings for accountName, accountNumber, and bankName."
       }
       Return ONLY valid JSON in the specified format.
       `;
@@ -124,21 +125,18 @@ export async function parseBankStatementPDF(
         model: GEMINI_PARSER_MODEL,
         config: {
           temperature: 0.1,
-          responseMimeType: 'application/json',
+          responseMimeType: "application/json",
           systemInstruction: SYSTEM_INSTRUCTION,
           httpOptions: { timeout: 180_000 }, // 3 min per chunk (PDF extraction can be slow; 504 = backend deadline)
         },
         contents: [
           {
-            role: 'user',
+            role: "user",
             parts: [
               {
                 fileData: {
-                  fileUri:
-                    uploadedFile.file?.uri ||
-                    uploadedFile.uri ||
-                    (uploadedFile as any).fileUri,
-                  mimeType: 'application/pdf',
+                  fileUri: uploadedFile!.file?.uri || uploadedFile!.uri!,
+                  mimeType: "application/pdf",
                 },
               },
               { text: prompt },
@@ -147,28 +145,30 @@ export async function parseBankStatementPDF(
         ],
       });
 
-      if (!result) throw new Error('No response from AI service');
+      if (!result) throw new Error("No response from AI service");
 
-      let textResponse = '';
+      let textResponse = "";
       try {
-        const anyResult = result as any;
+        const anyResult = result as { text?: unknown };
         textResponse =
-          typeof anyResult.text === 'function'
-            ? anyResult.text()
-            : anyResult.text || '';
-      } catch (e) {
-        const anyResult = result as any;
+          typeof anyResult.text === "function"
+            ? (anyResult.text() as string)
+            : (anyResult.text as string) || "";
+      } catch (_e) {
+        const anyResult = result as {
+          candidates?: { content?: { parts?: { text?: string }[] } }[];
+        };
         textResponse =
-          anyResult.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          anyResult.candidates?.[0]?.content?.parts?.[0]?.text || "";
       }
 
       try {
         return JSON.parse(textResponse.trim());
-      } catch (e) {
+      } catch (_e) {
         // Robust fallback for JSON extraction
         const match = textResponse.match(/\{[\s\S]*\}/);
         if (match) return JSON.parse(match[0]);
-        throw new Error('Invalid JSON response from AI');
+        throw new Error("Invalid JSON response from AI");
       }
     };
 
@@ -186,7 +186,7 @@ export async function parseBankStatementPDF(
       });
     }
 
-    const results: any[] = new Array(chunkConfigs.length);
+    const results: Record<string, unknown>[] = new Array(chunkConfigs.length);
     let completedPages = 0;
 
     const processQueue = async () => {
@@ -211,22 +211,28 @@ export async function parseBankStatementPDF(
             if (onProgress)
               onProgress(Math.min(completedPages, numPages), numPages);
             break;
-          } catch (error: any) {
-            const msg = (error?.message ?? String(error)).toLowerCase();
-            const status = (error as any)?.status ?? (error as any)?.code;
+          } catch (error) {
+            const err = error as {
+              message?: string;
+              status?: number;
+              code?: number;
+              name?: string;
+            };
+            const msg = (err?.message ?? String(error)).toLowerCase();
+            const status = err?.status ?? err?.code;
             const isRetryable =
-              msg.includes('503') ||
-              msg.includes('429') ||
-              msg.includes('504') ||
-              msg.includes('deadline') ||
-              msg.includes('json') ||
-              msg.includes('fetch failed') ||
-              msg.includes('sending request') ||
-              msg.includes('econnreset') ||
-              msg.includes('etimedout') ||
-              msg.includes('network') ||
+              msg.includes("503") ||
+              msg.includes("429") ||
+              msg.includes("504") ||
+              msg.includes("deadline") ||
+              msg.includes("json") ||
+              msg.includes("fetch failed") ||
+              msg.includes("sending request") ||
+              msg.includes("econnreset") ||
+              msg.includes("etimedout") ||
+              msg.includes("network") ||
               status === 504 ||
-              (error?.name === 'TypeError' && msg.includes('fetch'));
+              (err.name === "TypeError" && msg.includes("fetch"));
             if (isRetryable && retries < MAX_RETRIES) {
               retries++;
               const backoff = retries * 4000;
@@ -257,42 +263,54 @@ export async function parseBankStatementPDF(
       if (!res) return;
       if (res.isNotBankStatement) isNotBankStatement = true;
 
-      if (
-        res.accountName &&
-        res.accountName !== '...' &&
-        (!data.accountName || data.accountName === 'N/A')
-      )
-        data.accountName = res.accountName;
-      if (
-        res.accountNumber &&
-        res.accountNumber !== '...' &&
-        (!data.accountNumber || data.accountNumber === 'N/A')
-      )
-        data.accountNumber = res.accountNumber;
-      if (
-        res.bankName &&
-        res.bankName !== '...' &&
-        (!data.bankName || data.bankName === 'N/A')
-      )
-        data.bankName = res.bankName;
+      const accName = res.accountName as string | undefined;
+      const accNumber = res.accountNumber as string | undefined;
+      const bnkName = res.bankName as string | undefined;
 
-      if (Array.isArray(res.transactions)) {
-        const normalized = res.transactions
-          .filter((t: any) => t.date && t.amount)
-          .map((t: any) => ({
+      if (
+        accName &&
+        accName !== "..." &&
+        (!data.accountName || data.accountName === "N/A")
+      )
+        data.accountName = accName;
+      if (
+        accNumber &&
+        accNumber !== "..." &&
+        (!data.accountNumber || data.accountNumber === "N/A")
+      )
+        data.accountNumber = accNumber;
+      if (
+        bnkName &&
+        bnkName !== "..." &&
+        (!data.bankName || data.bankName === "N/A")
+      )
+        data.bankName = bnkName;
+
+      const transactions = res.transactions as
+        | {
+            date?: string;
+            description?: string;
+            amount?: unknown;
+            balance?: unknown;
+          }[]
+        | undefined;
+      if (Array.isArray(transactions)) {
+        const normalized = transactions
+          .filter((t) => t.date && t.amount)
+          .map((t) => ({
             date: String(t.date).trim(),
-            description: String(t.description || '')
-              .replace(/\s+/g, ' ')
+            description: String(t.description || "")
+              .replace(/\s+/g, " ")
               .trim(),
             amount:
-              typeof t.amount === 'number'
+              typeof t.amount === "number"
                 ? t.amount
-                : parseFloat(String(t.amount).replace(/[^0-9.]/g, '')),
+                : parseFloat(String(t.amount).replace(/[^0-9.]/g, "")),
             balance:
-              typeof t.balance === 'number'
+              typeof t.balance === "number"
                 ? t.balance
-                : parseFloat(String(t.balance).replace(/[^0-9.]/g, '')),
-            type: 'credit' as const,
+                : parseFloat(String(t.balance).replace(/[^0-9.]/g, "")),
+            type: "credit" as const,
           }));
         data.transactions.push(...normalized);
       }
@@ -300,7 +318,7 @@ export async function parseBankStatementPDF(
 
     if (isNotBankStatement) {
       throw new Error(
-        'The document you uploaded does not appear to be a valid bank statement.',
+        "The document you uploaded does not appear to be a valid bank statement.",
       );
     }
 
@@ -312,44 +330,49 @@ export async function parseBankStatementPDF(
       seen.add(key);
       return true;
     });
-  } catch (error: any) {
-    console.error('Gemini Multi-Page Extraction Error:', error);
-    const msg = error.message || '';
+  } catch (error) {
+    const err = error as Error;
+    console.error("Gemini Multi-Page Extraction Error:", err);
+    const msg = err.message || "";
 
     // 1. Handle specific known errors with user-friendly messages
-    if (msg.includes('429') || msg.toLowerCase().includes('rate limit')) {
+    if (msg.includes("429") || msg.toLowerCase().includes("rate limit")) {
       throw new Error(
-        'The AI service is currently reaching its limit. Please wait about 30 seconds and try again.',
+        "The AI service is currently reaching its limit. Please wait about 30 seconds and try again.",
       );
     }
 
-    if (msg.includes('503') || msg.toLowerCase().includes('overloaded')) {
+    if (msg.includes("503") || msg.toLowerCase().includes("overloaded")) {
       throw new Error(
-        'The AI service is currently busy processing many requests. Please try again in about 10 seconds.',
+        "The AI service is currently busy processing many requests. Please try again in about 10 seconds.",
       );
     }
 
-    if (msg.includes('504') || msg.includes('deadline') || msg.includes('DEADLINE_EXCEEDED')) {
+    if (
+      msg.includes("504") ||
+      msg.includes("deadline") ||
+      msg.includes("DEADLINE_EXCEEDED")
+    ) {
       throw new Error(
-        'The request took too long to complete. Please try again or upload a shorter statement.',
+        "The request took too long to complete. Please try again or upload a shorter statement.",
       );
     }
 
     // 2. Pass through our specific "not a bank statement" error
-    if (msg.includes('not a bank statement')) {
+    if (msg.includes("not a bank statement")) {
       throw error;
     }
 
     // 3. Fallback to a cleaner error message for unexpected failures (leaked technical errors)
     throw new Error(
-      'Something went wrong while processing your document. Please try again.',
+      "Something went wrong while processing your document. Please try again.",
     );
   } finally {
     // Clean up temporary file
     if (tempPath && fs.existsSync(tempPath)) {
       try {
         fs.unlinkSync(tempPath);
-      } catch (e) {}
+      } catch (_e) {}
     }
     // Note: We don't delete from Gemini here as there isn't a simple delete method in this SDK version,
     // and files expire automatically after 48 hours.
@@ -364,7 +387,7 @@ export async function parseBankStatementPDF(
       // Try DD/MM/YYYY or MM/DD/YYYY
       const m1 = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
       if (m1) {
-        let [_, p1, p2, p3] = m1;
+        const [p1, p2, p3] = m1.slice(1);
         const year =
           p3.length === 2 ? parseInt(`20${p3}`, 10) : parseInt(p3, 10);
         const v1 = parseInt(p1, 10);
@@ -387,7 +410,7 @@ export async function parseBankStatementPDF(
       // Try YYYY-MM-DD
       const m2 = s.match(/^(\d{4})[\-](\d{1,2})[\-](\d{1,2})$/);
       if (m2) {
-        let [_, yyyy, mm, dd] = m2;
+        const [yyyy, mm, dd] = m2.slice(1);
         return new Date(
           parseInt(yyyy, 10),
           parseInt(mm, 10) - 1,

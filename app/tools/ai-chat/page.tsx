@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import { AIAssistantMessages } from '@/components/ai-chat/AIAssistantMessages';
-import { AIAssistantInput } from '@/components/ai-chat/AIAssistantInput';
-import { Message } from '@/app/types';
-import { buildSessionContext } from '@/lib/ai/sessionContext';
+import { useState } from "react";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { AIAssistantMessages } from "@/components/ai-chat/AIAssistantMessages";
+import { AIAssistantInput } from "@/components/ai-chat/AIAssistantInput";
+import { Message } from "@/app/types";
+import { buildSessionContext } from "@/lib/ai/sessionContext";
 
 export default function AIChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
 
@@ -32,14 +32,14 @@ export default function AIChatPage() {
       );
 
       setMessages(updatedMessages);
-      setInput('');
+      setInput("");
       setIsLoading(true);
       setEditingMessageId(null);
 
       try {
-        const response = await fetch('/api/tax', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const response = await fetch("/api/tax", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             question: editedContent,
             context: buildSessionContext(updatedMessages),
@@ -50,19 +50,19 @@ export default function AIChatPage() {
 
         const assistantMessage: Message = {
           id: crypto.randomUUID(),
-          role: 'assistant',
+          role: "assistant",
           content:
             data.aiResponse || "I'm sorry, I couldn't process your request.",
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, assistantMessage]);
       } catch (error) {
-        console.error('AI Query Error:', error);
+        console.error("AI Query Error:", error);
         const errorMessage: Message = {
           id: crypto.randomUUID(),
-          role: 'assistant',
+          role: "assistant",
           content:
-            'Something went wrong while processing your request. Please try again.',
+            "Something went wrong while processing your request. Please try again.",
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, errorMessage]);
@@ -77,19 +77,19 @@ export default function AIChatPage() {
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
-      role: 'user',
+      role: "user",
       content: question,
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, userMessage]);
-    setInput('');
+    setInput("");
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/tax', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/tax", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question, context }),
       });
 
@@ -97,19 +97,19 @@ export default function AIChatPage() {
 
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
-        role: 'assistant',
+        role: "assistant",
         content:
           data.aiResponse || "I'm sorry, I couldn't process your request.",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
-      console.error('AI Query Error:', error);
+      console.error("AI Query Error:", error);
       const errorMessage: Message = {
         id: crypto.randomUUID(),
-        role: 'assistant',
+        role: "assistant",
         content:
-          'Something went wrong while processing your request. Please try again.',
+          "Something went wrong while processing your request. Please try again.",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -125,11 +125,11 @@ export default function AIChatPage() {
           <div className="w-full max-w-6xl mx-auto px-6 md:px-12 xl:px-0 pt-10">
             <div className="space-y-4 max-w-2xl">
               <p className="text-lg md:text-[22px] text-zinc-800 dark:text-zinc-400 max-w-3xl leading-relaxed font-medium">
-                Our{' '}
+                Our{" "}
                 <span className="text-indigo-800 dark:text-indigo-400 font-bold">
                   AI Chat Assistant
-                </span>{' '}
-                is here to help you understand the new tax regime.{' '}
+                </span>{" "}
+                is here to help you understand the new tax regime.{" "}
                 <span className="font-bold underline decoration-indigo-500 underline-offset-4">
                   Ask anything tax-related
                 </span>
@@ -157,14 +157,14 @@ export default function AIChatPage() {
             onNewSession={() => {
               setMessages([]);
               setEditingMessageId(null);
-              setInput('');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              setInput("");
+              window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             onSubmit={handleSubmit}
             editingMessageId={editingMessageId}
             onCancelEdit={() => {
               setEditingMessageId(null);
-              setInput('');
+              setInput("");
             }}
           />
         </div>

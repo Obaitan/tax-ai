@@ -1,12 +1,12 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 export function WelcomeScreen() {
   const tools = [
     {
-      title: 'Tax Estimator',
+      title: "Tax Estimator",
       description:
-        'Answer a few guided questions to estimate your individual / corporate tax obligations.',
-      href: '/tools/tax-estimator',
+        "Answer a few guided questions to estimate your individual / corporate tax obligations.",
+      href: "/tools/tax-estimator",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -25,13 +25,13 @@ export function WelcomeScreen() {
           <line x1="8" x2="16" y1="18" y2="18" />
         </svg>
       ),
-      color: 'blue',
+      color: "blue",
     },
     {
-      title: 'AI Chat Assistant',
+      title: "AI Chat Assistant",
       description:
-        'Ask questions about tax laws, exemptions, PAYE, and compliance.',
-      href: '/tools/ai-chat',
+        "Ask questions about tax laws, exemptions, PAYE, and compliance.",
+      href: "/tools/ai-chat",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -46,13 +46,13 @@ export function WelcomeScreen() {
           <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" />
         </svg>
       ),
-      color: 'emerald',
+      color: "emerald",
     },
     {
-      title: 'Bank Statement Analyser',
+      title: "Bank Statement Analyser",
       description:
-        'Upload your bank statement and download a report showing only credit transactions.',
-      href: '/tools/bank-statement',
+        "Upload your bank statement and download a report showing only credit transactions.",
+      href: "/tools/bank-statement",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +71,7 @@ export function WelcomeScreen() {
           <path d="M16 17H8" />
         </svg>
       ),
-      color: 'purple',
+      color: "purple",
     },
   ];
 
@@ -80,11 +80,11 @@ export function WelcomeScreen() {
       <div className="w-full max-w-6xl space-y-12">
         <div className="md:text-center space-y-2">
           <h1 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
-            Simplify Your{' '}
+            Simplify Your{" "}
             <span className="text-indigo-800 dark:text-indigo-400">Taxes</span>
           </h1>
           <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto text-lg">
-            Estimate individual and corporate taxes in{' '}
+            Estimate individual and corporate taxes in{" "}
             <span className="text-indigo-800 dark:text-indigo-400 font-semibold">Nigeria</span>, get
             AI guidance based on the new tax act, and analyse bank statements
             for inflowss — all in one place.
@@ -101,19 +101,19 @@ export function WelcomeScreen() {
               <div
                 className={`h-12 w-12 rounded-xl flex items-center justify-center mb-4 transition-colors shadow-sm
                 ${
-                  tool.color === 'blue'
-                    ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
-                    : ''
+                  tool.color === "blue"
+                    ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                    : ""
                 }
                 ${
-                  tool.color === 'emerald'
-                    ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
-                    : ''
+                  tool.color === "emerald"
+                    ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400"
+                    : ""
                 }
                 ${
-                  tool.color === 'purple'
-                    ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400'
-                    : ''
+                  tool.color === "purple"
+                    ? "bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400"
+                    : ""
                 }
                 group-hover:scale-110 transition-transform duration-300
               `}

@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { ContactLink } from './ContactLink';
-import { resources } from '../../lib/data/resources';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ContactLink } from "./ContactLink";
+import { resources } from "../../lib/data/resources";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../ui/tooltip';
+} from "../ui/tooltip";
 
 export default function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -25,20 +25,22 @@ export default function Header() {
   // Toggle dark mode
   useEffect(() => {
     if (isDarkMode) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [isDarkMode]);
 
   // Close menus when route changes
-  useEffect(() => {
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
     setIsMobileMenuOpen(false);
     setIsResourcesOpen(false);
     setIsToolsOpen(false);
     setIsMobileResourcesOpen(false);
     setIsMobileToolsOpen(false);
-  }, [pathname]);
+  }
 
   return (
     <TooltipProvider>
@@ -71,15 +73,15 @@ export default function Header() {
                 aria-haspopup="menu"
                 aria-expanded={isToolsOpen}
                 className={`flex items-center gap-2 transition-colors cursor-pointer ${
-                  pathname.startsWith('/tools')
-                    ? 'text-indigo-900 dark:text-indigo-400 font-semibold'
-                    : 'text-zinc-500 dark:text-zinc-400 hover:text-indigo-900 dark:hover:text-indigo-400'
+                  pathname.startsWith("/tools")
+                    ? "text-indigo-900 dark:text-indigo-400 font-semibold"
+                    : "text-zinc-500 dark:text-zinc-400 hover:text-indigo-900 dark:hover:text-indigo-400"
                 }`}
               >
                 Tools
                 <svg
                   className={`w-4 h-4 text-zinc-400 transition-transform ${
-                    isToolsOpen ? 'rotate-180' : ''
+                    isToolsOpen ? "rotate-180" : ""
                   }`}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -98,8 +100,8 @@ export default function Header() {
               <div
                 className={`absolute left-0 top-full pt-3 w-64 transition-all duration-200 ${
                   isToolsOpen
-                    ? 'opacity-100 translate-y-0 pointer-events-auto'
-                    : 'opacity-0 translate-y-1 pointer-events-none'
+                    ? "opacity-100 translate-y-0 pointer-events-auto"
+                    : "opacity-0 translate-y-1 pointer-events-none"
                 }`}
               >
                 <div
@@ -185,9 +187,9 @@ export default function Header() {
             <Link
               href="/data-privacy"
               className={`hover:text-indigo-900 dark:hover:text-indigo-400 transition-colors ${
-                isActive('/data-privacy')
-                  ? 'text-indigo-900 dark:text-indigo-400 font-semibold'
-                  : 'text-zinc-500 dark:text-zinc-400'
+                isActive("/data-privacy")
+                  ? "text-indigo-900 dark:text-indigo-400 font-semibold"
+                  : "text-zinc-500 dark:text-zinc-400"
               }`}
             >
               Data Privacy
@@ -208,7 +210,7 @@ export default function Header() {
                 Resources
                 <svg
                   className={`w-4 h-4 text-zinc-400 transition-transform ${
-                    isResourcesOpen ? 'rotate-180' : ''
+                    isResourcesOpen ? "rotate-180" : ""
                   }`}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -227,8 +229,8 @@ export default function Header() {
               <div
                 className={`absolute right-0 top-full pt-3 w-92 transition-all duration-200 ${
                   isResourcesOpen
-                    ? 'opacity-100 translate-y-0 pointer-events-auto'
-                    : 'opacity-0 translate-y-1 pointer-events-none'
+                    ? "opacity-100 translate-y-0 pointer-events-auto"
+                    : "opacity-0 translate-y-1 pointer-events-none"
                 }`}
               >
                 <div
@@ -243,7 +245,7 @@ export default function Header() {
                     {resources.map((r) => (
                       <a
                         key={r.id}
-                        href={r.url || '#'}
+                        href={r.url || "#"}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex gap-1.5 px-4 py-3.5 text-sm text-zinc-700 dark:text-zinc-200 hover:bg-[#f6f6f6] dark:hover:bg-zinc-800 transition-colors"
@@ -377,7 +379,7 @@ export default function Header() {
                 </button>
               </TooltipTrigger>
               <TooltipContent side="bottom" align="center">
-                <p>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</p>
+                <p>{isDarkMode ? "Light Mode" : "Dark Mode"}</p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -387,8 +389,8 @@ export default function Header() {
         <div
           className={`lg:hidden h-screen fixed inset-0 top-17.5 bg-zinc-950/60 backdrop-blur-[2px] z-30 transition-opacity duration-300 ${
             isMobileMenuOpen
-              ? 'opacity-100 pointer-events-auto'
-              : 'opacity-0 pointer-events-none'
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
           }`}
           onClick={() => setIsMobileMenuOpen(false)}
         />
@@ -397,8 +399,8 @@ export default function Header() {
         <div
           className={`lg:hidden absolute top-full left-0 w-full z-40 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 shadow-sm transition-all duration-300 ease-in-out ${
             isMobileMenuOpen
-              ? 'max-h-[85vh] opacity-100 translate-y-0 pointer-events-auto'
-              : 'max-h-0 opacity-0 -translate-y-2 pointer-events-none'
+              ? "max-h-[85vh] opacity-100 translate-y-0 pointer-events-auto"
+              : "max-h-0 opacity-0 -translate-y-2 pointer-events-none"
           } overflow-y-auto`}
         >
           <div className="px-6 md:px-12 py-5 space-y-6">
@@ -411,7 +413,7 @@ export default function Header() {
                 <span>Tools</span>
                 <svg
                   className={`w-4 h-4 transform transition-transform ${
-                    isMobileToolsOpen ? 'rotate-180' : ''
+                    isMobileToolsOpen ? "rotate-180" : ""
                   }`}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -429,7 +431,7 @@ export default function Header() {
 
               <div
                 className={`mt-4 space-y-4 pl-3 transition-all ${
-                  isMobileToolsOpen ? 'block' : 'hidden'
+                  isMobileToolsOpen ? "block" : "hidden"
                 }`}
               >
                 <Link
@@ -509,9 +511,9 @@ export default function Header() {
             <Link
               href="/data-privacy"
               className={`block text-sm transition-colors ${
-                isActive('/data-privacy')
-                  ? 'text-indigo-900 font-semibold'
-                  : 'text-zinc-600 dark:text-zinc-400 hover:text-indigo-900 dark:hover:text-indigo-400'
+                isActive("/data-privacy")
+                  ? "text-indigo-900 font-semibold"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-indigo-900 dark:hover:text-indigo-400"
               }`}
             >
               Data Privacy
@@ -526,7 +528,7 @@ export default function Header() {
                 <span>Download Gazettes</span>
                 <svg
                   className={`w-4 h-4 transform transition-transform ${
-                    isMobileResourcesOpen ? 'rotate-180' : ''
+                    isMobileResourcesOpen ? "rotate-180" : ""
                   }`}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -544,15 +546,15 @@ export default function Header() {
 
               <div
                 className={`mt-3 space-y-3 pl-3 transition-all ${
-                  isMobileResourcesOpen ? 'block' : 'hidden'
+                  isMobileResourcesOpen ? "block" : "hidden"
                 }`}
               >
                 {resources.map((r) => (
                   <Link
                     key={r.id}
-                    href={r.url || '#'}
-                    target={r.url ? '_blank' : undefined}
-                    rel={r.url ? 'noopener noreferrer' : undefined}
+                    href={r.url || "#"}
+                    target={r.url ? "_blank" : undefined}
+                    rel={r.url ? "noopener noreferrer" : undefined}
                     className="flex items-center justify-between gap-3 text-sm text-zinc-500 dark:text-zinc-400 hover:text-indigo-900 dark:hover:text-indigo-400 transition-colors"
                   >
                     <div className="flex items-center gap-3">

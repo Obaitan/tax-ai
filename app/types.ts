@@ -1,7 +1,7 @@
 // Message Types
 export type Message = {
   id: string;
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   timestamp: Date;
   options?: { label: string; value: string | boolean }[];
@@ -9,7 +9,7 @@ export type Message = {
   pdfFilename?: string; // Optional filename for the PDF
   // Optional file metadata for uploads
   fileName?: string;
-  fileType?: 'image' | 'pdf' | 'bank';
+  fileType?: "image" | "pdf" | "bank";
   fileSize?: number;
   // Indicates a processing/loading assistant message (e.g., while a file is being analyzed)
   isProcessing?: boolean;
@@ -29,7 +29,7 @@ export interface Transaction {
   description: string;
   amount: number;
   balance: number;
-  type: 'credit' | 'debit';
+  type: "credit" | "debit";
 }
 
 export interface BankStatementData {

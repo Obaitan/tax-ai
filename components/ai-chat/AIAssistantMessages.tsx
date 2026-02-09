@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
 import { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import {
@@ -25,7 +27,7 @@ export function AIAssistantMessages({
   useEffect(() => {
     const timer = setTimeout(() => {
       if (scrollRef.current) {
-        scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        scrollRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
       }
     }, 100);
     return () => clearTimeout(timer);

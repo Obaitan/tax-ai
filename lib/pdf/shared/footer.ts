@@ -9,7 +9,7 @@ import jsPDF from "jspdf";
 export function addFooter(
   doc: jsPDF,
   pageNumber: number,
-  totalPages: number
+  totalPages: number,
 ): void {
   const pageHeight = doc.internal.pageSize.getHeight();
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -22,9 +22,9 @@ export function addFooter(
 
   // Left side: Logo placeholder + App name + Subtext
   doc.setFontSize(10);
-  doc.setTextColor(50, 143, 112);
+  doc.setTextColor(55, 42, 172); // update to #372aac (indigo-800)
   doc.setFont("helvetica", "bold");
-  doc.text("taxaffairs.ng", 20, footerY);
+  doc.text("taxmatters.ng", 20, footerY);
 
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
@@ -34,7 +34,7 @@ export function addFooter(
   // Right side: Contact email
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
-  const email = "contact@taxaffairs.ng";
+  const email = "contact@matters.ng";
   const emailWidth = doc.getTextWidth(email);
   doc.text(email, pageWidth - 20 - emailWidth, footerY + 4);
 

@@ -13,7 +13,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       token: process.env.STATEMENT_READ_WRITE_TOKEN,
       onBeforeGenerateToken: async () => {
         return {
-          allowedContentTypes: ['application/pdf'],
+          allowedContentTypes: ["application/pdf"],
           maximumSizeInBytes: MAX_FILE_SIZE,
           addRandomSuffix: true,
         };

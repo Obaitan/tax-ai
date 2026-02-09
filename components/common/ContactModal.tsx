@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -6,10 +6,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Copy, Mail, Check } from 'lucide-react';
-import { useState } from 'react';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Copy, Mail, Check } from "lucide-react";
+import { useState } from "react";
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -18,7 +18,7 @@ interface ContactModalProps {
 
 export function ContactModal({ isOpen, onOpenChange }: ContactModalProps) {
   const [copied, setCopied] = useState(false);
-  const email = 'elero.obaitan@gmail.com';
+  const email = "elero.obaitan@gmail.com";
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(email);
@@ -60,7 +60,7 @@ export function ContactModal({ isOpen, onOpenChange }: ContactModalProps) {
         <div className="flex flex-col sm:flex-row gap-3">
           <Button
             variant="outline"
-            size={'lg'}
+            size={"lg"}
             className="flex-1 gap-2 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all active:scale-95"
             onClick={copyToClipboard}
           >
@@ -69,10 +69,10 @@ export function ContactModal({ isOpen, onOpenChange }: ContactModalProps) {
             ) : (
               <Copy className="h-4 w-4" />
             )}
-            {copied ? 'Copied!' : 'Copy Email'}
+            {copied ? "Copied!" : "Copy Email"}
           </Button>
           <Button
-            size={'lg'}
+            size={"lg"}
             className="flex-1 gap-2 bg-indigo-800 hover:bg-indigo-800 dark:bg-indigo-400 text-white dark:text-white font-semibold transition-all active:scale-95 shadow-lg shadow-emerald-600/20"
             asChild
             onClick={handleSendEmail}
