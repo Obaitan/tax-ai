@@ -22,7 +22,7 @@ export function generateBankStatementPDF(data: BankStatementData): Blob {
   doc.setFontSize(15);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(0, 0, 0);
-  doc.text("Tax Matters", margin, 20);
+  doc.text("Tax AI", margin, 20);
 
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");

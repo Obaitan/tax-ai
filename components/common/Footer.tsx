@@ -16,7 +16,7 @@ export default function Footer() {
           <div className="space-y-5">
             <Link href="/" className="inline-block">
               <span className="text-lg md:text-xl font-bold text-zinc-900 dark:text-zinc-100">
-                Tax Matters
+                Tax AI
               </span>
             </Link>
             <p className="text-zinc-600 dark:text-zinc-500 text-sm leading-relaxed">
@@ -133,7 +133,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-zinc-100 dark:border-zinc-800 pt-8 flex flex-col md:flex-row flex-wrap lg:justify-between md:items-center gap-x-5 gap-y-2.5">
           <p className="text-zinc-500 text-xs">
-            © {currentYear} Tax Matters. Built for Nigeria.
+            © {currentYear} Tax AI. Built for Nigeria.
           </p>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2.5 mt-2 md:mt-0">
             <Link

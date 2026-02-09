@@ -15,15 +15,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tax Matters | AI Tax Calculator & Nigeria Tax Act 2025 Guide",
+  title: "Tax AI | AI Tax Calculator & Nigeria Tax Act 2025 Guide",
   description:
     "Calculate PAYE, VAT, CIT, and corporate taxes with our AI-powered platform. Get instant PDF downloads and expert guidance on the Nigeria Tax Act 2025. Simplified tax solutions for Nigerians.",
   openGraph: {
-    title: "Tax Matters: Nigeria’s AI Tax Assistant",
+    title: "Tax AI: Nigeria’s AI Tax Assistant",
     description:
       "Expert guidance on the Nigeria Tax Act 2025. Calculate your taxes in seconds.",
     url: "https://tax-ai-delta.vercel.app/",
-    siteName: "Tax Matters",
+    siteName: "Tax AI",
     images: [
       {
         url: "", // Create a 1200x630 image for better CTR

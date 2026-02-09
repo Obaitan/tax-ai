@@ -18,7 +18,7 @@ interface ContactModalProps {
 
 export function ContactModal({ isOpen, onOpenChange }: ContactModalProps) {
   const [copied, setCopied] = useState(false);
-  const email = "elero.obaitan@gmail.com";
+  const email = "[CONTACT_EMAIL]";
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(email);
