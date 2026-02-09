@@ -24,7 +24,7 @@ export function addFooter(
   doc.setFontSize(10);
   doc.setTextColor(55, 42, 172); // update to #372aac (indigo-800)
   doc.setFont("helvetica", "bold");
-  doc.text("taxmatters.ng", 20, footerY);
+  doc.text("taxai.ng", 20, footerY);
 
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
@@ -34,7 +34,7 @@ export function addFooter(
   // Right side: Contact email
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
-  const email = "contact@matters.ng";
+  const email = "[CONTACT_EMAIL]";
   const emailWidth = doc.getTextWidth(email);
   doc.text(email, pageWidth - 20 - emailWidth, footerY + 4);
 

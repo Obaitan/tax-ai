@@ -22,7 +22,7 @@ export function generateChatResponsePDF(
   doc.setFontSize(15);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(55, 42, 172);
-  doc.text("Tax Matters", margin, 20);
+  doc.text("Tax AI", margin, 20);
 
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");

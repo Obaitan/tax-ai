@@ -49,7 +49,7 @@ export default function Header() {
           <Link href="/" className="flex items-center gap-3">
             <div>
               <p className="text-lg md:text-xl font-bold text-indigo-900 dark:text-indigo-400">
-                Tax Matters
+                Tax AI
               </p>
               <p className="hidden md:block text-xs text-zinc-500 dark:text-zinc-500">
                 Based on the Nigerian Tax Act 2025

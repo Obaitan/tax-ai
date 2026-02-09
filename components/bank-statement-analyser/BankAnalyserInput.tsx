@@ -14,7 +14,7 @@ export function BankAnalyserInput({
   };
 
   return (
-    <div className="py-4 md:py-6">
+    <div className="py-4">
       <div className="max-w-4xl mx-auto px-4 md:px-12 lg:px-0">
         {/* Desktop Layout */}
         <div className="hidden md:block">
