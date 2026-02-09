@@ -12,7 +12,7 @@ import Link from "next/link";
 interface TaxEstimatorMessagesProps {
   messages: Message[];
   isLoading: boolean;
-  onOptionClick?: (value: any) => void;
+  onOptionClick?: (value: string | number | boolean) => void;
   isComplete?: boolean;
   onNewSession?: () => void;
 }
@@ -55,7 +55,7 @@ export function TaxEstimatorMessages({
     <div className="w-full max-w-6xl mx-auto grow flex flex-col">
       <div className="flex-1 px-6 md:px-12 xl:px-0">
         <div className="max-w-6xl mx-auto space-y-10 pt-10 pb-12 relative">
-          {messages.map((message, index) => (
+          {messages.map((message) => (
             <div
               key={message.id}
               className={`flex gap-2.5 scroll-mt-32 ${

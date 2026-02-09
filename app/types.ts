@@ -75,6 +75,7 @@ export type TaxEstimatorState = {
   };
   capitalGains?: {
     hasDisposals: boolean;
+    netGain?: number;
     disposals: {
       type: string;
       cost: number;
@@ -92,6 +93,7 @@ export type TaxEstimatorState = {
   globalTurnover?: number;
   vatOutputs?: number;
   vatInputs?: number;
+  corporateNetGain?: number;
   corporateDisposals?: {
     cost: number;
     value: number;

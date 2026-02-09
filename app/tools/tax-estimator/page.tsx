@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TaxEstimatorMessages } from "@/components/tax-estimator/TaxEstimatorMessages";
 import { TaxEstimatorInput } from "@/components/tax-estimator/TaxEstimatorInput";
@@ -23,7 +23,7 @@ interface Question {
   field: string;
   branch?: TaxpayerType;
   next?: (state: TaxEstimatorState) => string | null;
-  validate?: (value: any) => string | null;
+  validate?: (value: string | number | boolean) => string | null;
 }
 
 const QUESTIONS: Record<string, Question> = {
@@ -280,15 +280,42 @@ const QUESTIONS: Record<string, Question> = {
 };
 
 export default function TaxEstimatorPage() {
+  const getInitialMessage = (): Message => {
+    const firstQ = QUESTIONS["START"];
+    return {
+      id: "q-start",
+      role: "assistant",
+      content: firstQ.text,
+      timestamp: new Date(),
+      options: firstQ.options,
+    };
+  };
+
   const [state, setState] = useState<TaxEstimatorState>({
     step: 0,
     history: [],
   });
   const [currentQuestionId, setCurrentQuestionId] = useState<string>("START");
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([getInitialMessage()]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+
+  const setNestedField = (
+    obj: TaxEstimatorState,
+    path: string,
+    value: string | number | boolean,
+  ): TaxEstimatorState => {
+    const keys = path.split(".");
+    const current = { ...obj } as Record<string, unknown>;
+    let temp: Record<string, unknown> = current;
+    for (let i = 0; i < keys.length - 1; i++) {
+      temp[keys[i]] = { ...((temp[keys[i]] as Record<string, unknown>) || {}) };
+      temp = temp[keys[i]] as Record<string, unknown>;
+    }
+    temp[keys[keys.length - 1]] = value;
+    return current as TaxEstimatorState;
+  };
 
   const handleNewSession = () => {
     const firstQ = QUESTIONS["START"];
@@ -309,25 +336,6 @@ export default function TaxEstimatorPage() {
     setInput("");
     setIsComplete(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  // Initial greeting
-  useEffect(() => {
-    if (messages.length === 0) {
-      handleNewSession();
-    }
-  }, []);
-
-  const setNestedField = (obj: any, path: string, value: any) => {
-    const keys = path.split(".");
-    let current = { ...obj };
-    let temp = current;
-    for (let i = 0; i < keys.length - 1; i++) {
-      temp[keys[i]] = { ...(temp[keys[i]] || {}) };
-      temp = temp[keys[i]];
-    }
-    temp[keys[keys.length - 1]] = value;
-    return current;
   };
 
   const handleResponse = (value: string | number | boolean) => {
@@ -387,7 +395,7 @@ export default function TaxEstimatorPage() {
     }
   };
 
-  const handleSummary = (finalState: any) => {
+  const handleSummary = (finalState: TaxEstimatorState) => {
     setIsLoading(true);
     setTimeout(() => {
       let summaryContent = "";
@@ -563,7 +571,6 @@ ${
       .map(
         (
           b,
-          index,
         ) => `<div class="relief-item flex justify-between items-center p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-200 dark:border-zinc-700 text-sm">
         <div class="flex items-center gap-1.5"><span>${(b.rate * 100).toFixed(2)}% tax rate</span>
       <span class="font-medium">on ₦ ${b.taxableAmount.toLocaleString()}</span></div>
@@ -876,7 +883,7 @@ This corporate tax estimate is provided for planning purposes under the NTA 2025
     setInput("");
   };
 
-  const handleOptionClick = (value: string | boolean) => {
+  const handleOptionClick = (value: string | number | boolean) => {
     handleResponse(value);
   };
 

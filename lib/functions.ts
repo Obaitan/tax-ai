@@ -65,33 +65,8 @@ const PAYE_BANDS_2026 = [
 ];
 
 export function calculatePAYE(taxableIncome: number): PayeResult {
-  let remaining = taxableIncome;
-  const bands: PayeBandResult[] = [];
-
-  for (const band of PAYE_BANDS_2026) {
-    if (remaining <= 0) {
-      if (band.rate === 0 && taxableIncome === 0) {
-        // Special case for zero income
-      } else {
-        break;
-      }
-    }
-
-    const lower = band.min;
-    const upper = band.max ?? Infinity;
-
-    // Calculate how much of the taxable income falls into this band
-    // The previous implementation was slightly off with band size calculation for absolute ranges
-    const bandCapacity = band.max
-      ? band.max - band.min + (band.min === 0 ? 0 : 1)
-      : Infinity;
-    // Actually, let's use a simpler logic for tiers
-    // Taxable income in this band:
-  }
-
   // Refined band calculation
   const calculatedBands: PayeBandResult[] = [];
-  let processedIncome = 0;
 
   for (const band of PAYE_BANDS_2026) {
     const bandMax = band.max ?? Infinity;
