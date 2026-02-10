@@ -1,70 +1,113 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tax AI
 
-## Tax Matters AI Assistant
+**Tax AI** is an advanced, AI-powered platform designed to simplify tax compliance and financial analysis for Nigerian taxpayers and businesses. Leveraging the power of Google's Gemini 3 models, it provides accurate, context-aware answers to tax questions, estimates tax liabilities, and analyzes financial documents with ease.
 
-This application provides an AI-powered assistant for Nigerian tax law questions using Gemini 3 and file search capabilities.
+## 🚀 Key Modules
 
-### Uploading Tax Law Documents
+The application consists of three core modules, each designed to address specific taxation needs in Nigeria:
 
-To upload PDF documents from the `lib/data/files/` directory to the Gemini file search store:
+### 1. AI Tax Assistant (`/tools/ai-chat`)
 
-```bash
-npm run upload-tax-files
-```
+A smart conversational interface that allows users to ask complex questions about Nigerian tax laws.
 
-This will:
-- Upload all PDF files in `lib/data/files/` to Gemini's file search store
-- Delete the local files after successful upload
-- Provide detailed progress and error reporting
+- **Powered by Gemini 3**: Utilizes advanced LLMs with Retrieval-Augmented Generation (RAG).
+- **Legal Context**: Grounded in the **Nigeria Tax Act 2025** and other relevant tax litigations.
+- **Features**: Provides citations, source references, and context-aware responses to ensure accuracy.
 
-### Managing File Search Store
+### 2. Tax Estimator (`/tools/tax-estimator`)
 
-**Create fresh store with only Nigeria Tax Act 2025.pdf:**
-```bash
-npm run recreate-filestore
-```
+A robust tool for calculating projected tax liabilities for different entity types.
 
-This command creates a new file search store with only the Nigeria Tax Act 2025.pdf document. Use this if you need to start fresh with just the required document.
+- **Personal Income Tax (PIT)**: Estimates tax for individuals based on employment income, benefits, and statutory deductions.
+- **Company Income Tax (CIT)**: Calculates tax obligations for corporate entities.
+- **Features**: Interactive step-by-step questionnaire, detailed breakdown of calculations, and PDF export of estimates.
 
-**Requirements:**
-- Set `GOOGLE_GEMINI_API_KEY` in your `.env` file
-- Place PDF files in `lib/data/files/` directory
+### 3. Bank Statement Analyzer (`/tools/bank-statement`)
 
-### Bank statement uploads (client upload to Vercel Blob)
+An intelligent document processing tool for analyzing financial statements.
 
-The bank statement analyser uploads PDFs from the browser to Vercel Blob. Set `STATEMENT_READ_WRITE_TOKEN` in your `.env` (from your Vercel Blob store). The token is used by the `/api/uploads` route to issue client upload tokens.
+- **PDF Analysis**: Parses uploaded bank statement PDFs to extract transaction data.
+- **Credit Analysis**: Identifies, categorizes, and summarizes credit transactions.
+- **Privacy First**: Secure upload and processing using Vercel Blob and efficient parsing logic.
 
-## Getting Started
+## 🛠️ Technologies Used
 
-First, run the development server:
+This project is built with a modern, scalable tech stack, ensuring performance and maintainability:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **UI & Styling**:
+  - [React 19](https://react.dev/)
+  - [Tailwind CSS](https://tailwindcss.com/)
+  - [Shadcn UI](https://ui.shadcn.com/) (Radix UI)
+  - [Lucide React](https://lucide.dev/) (Icons)
+- **AI & Integrations**:
+  - [Google Gemini API](https://ai.google.dev/) (`@google/genai`)
+  - [Vercel Blob](https://vercel.com/docs/storage/vercel-blob) (File Storage)
+- **PDF Processing**: `pdf-parse`, `jspdf`, `jspdf-autotable`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🏁 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Follow these steps to set up the project locally.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prerequisites
 
-## Learn More
+- Node.js 18+ installed
+- A Google Cloud project with Gemini API access
+- A Vercel account (for Blob storage)
 
-To learn more about Next.js, take a look at the following resources:
+### Installation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Clone the repository:**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   git clone https://github.com/your-username/tax-ai.git
+   cd tax-ai
+   ```
 
-## Deploy on Vercel
+2. **Install dependencies:**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **Set up Environment Variables:**
+   Create a `.env` file in the root directory and configure the following keys:
+
+   ```env
+   # API Key for Google Gemini Models
+   GOOGLE_GEMINI_API_KEY=your_gemini_api_key
+
+   # Vercel Blob Token for file uploads
+   STATEMENT_READ_WRITE_TOKEN=your_vercel_blob_token
+   ```
+
+4. **Run the Development Server:**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
+
+## 🗂️ Project Structure
+
+- `app/`: Next.js App Router pages and API routes.
+  - `tools/`: Contains the main feature modules (AI Chat, Estimator, Bank Analyzer).
+- `components/`: Reusable UI components.
+- `lib/`: Utility functions, API clients, and shared logic.
+- `public/`: Static assets.
+- `scripts/`: Helper scripts for data uploads and file store management.
+
+### Helper Scripts
+
+- **Upload Tax Files**: Uploads PDFs from `lib/data/files/` to Gemini's file search store.
+  ```bash
+  npm run upload-tax-files
+  ```
+- **Cleanup Filestore**: tools to manage the Gemini file store.
+  ```bash
+  npm run cleanup-filestore
+  ```
+
+## 📄 License
+
+This project is available for use under the [MIT License](LICENSE).
